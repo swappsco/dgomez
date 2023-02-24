@@ -1,14 +1,19 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
-from django.views import generic
+from django.views.generic import ListView, DetailView
 from django.utils import timezone
 
 from .models import Choice, Question
 
 #Presente un error al intentar aplicar estas vistas dinamicas y estuvo en no cambiar las instancias en el archivo urls.py revisar eso
-class IndexView(generic.ListView):
-    template_name = 'polls/index.html'
+class IndexView(ListView):
+    #Esta línea hará que la vista nos devuelva en la variable de contexto todos los registros del modelo question, sin embargo nosotros personalizamos eso por lo tanto no va esta línea.
+    #model = Question
+    
+    template_name = 'polls/index.html' #Este será el nombre de plantilla a renderizar
+    
+    #Este va a ser el nombre asignado a lo que django envía por defecto a la template como contexto, y será una lista del objeto tratado en esta vista, en el caso de no hacer esto la manera de referenciar el contexto será 'objects_list'
     context_object_name = 'latest_question_list'
 
     def get_queryset(self):
@@ -17,7 +22,7 @@ class IndexView(generic.ListView):
         return preguntas.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
 
 
-class DetailView(generic.DetailView):
+class DetailView(DetailView):
     model = Question
     template_name = 'polls/detail.html'
     def get_queryset(self):
@@ -27,7 +32,7 @@ class DetailView(generic.DetailView):
         preguntas = Question.objects.filter(choice__isnull=False).distinct()
         return preguntas.filter(pub_date__lte=timezone.now())
 
-class ResultsView(generic.DetailView):
+class ResultsView(DetailView):
     model = Question
     template_name = 'polls/results.html'
     def get_queryset(self):

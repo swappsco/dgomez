@@ -8,4 +8,4 @@ Pass: diego0221
 
 Usando Vistas basadas en clases
 
-Haciendo un commit usando la llave gpg 
+Haciendo un commit usando la llave gpg firmado
